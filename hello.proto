@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "./generated";
+
+package hello;
+
+import "google/api/annotations.proto"; // Import Google HTTP annotations
+
+// ExampleService is a sample gRPC service
+service ExampleService {
+  // SayHello is an RPC that returns a greeting message
+  rpc SayHello (ExampleRequest) returns (ExampleResponse) {
+    // HTTP mapping to expose this method via REST
+    option (google.api.http) = {
+      post: "/v1/example/sayHello"
+      body: "*"
+    };
+  }
+
+  // SayGoodbye is an RPC that returns a greeting message
+  rpc SayGoodbye (ExampleRequest) returns (ExampleResponse) {
+    // HTTP mapping to expose this method via REST
+    option (google.api.http) = {
+      post: "/v1/example/sayGoodbye"
+      body: "*"
+    };
+  }
+}
+
+// The request message containing the user's name
+message ExampleRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message ExampleResponse {
+  string message = 1;
+}
