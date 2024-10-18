@@ -96,8 +96,8 @@ generate: install_protoc install_protoc_gen_go install_protoc_gen_go_grpc instal
 # Clean generated code
 clean:
 	@echo "Cleaning generated files..."
-	rm -rf $(GO_OUT_DIR)/*
-	rm -rf $(SWAGGER_OUT_DIR)/*
+	rm -rf $(GO_OUT_DIR)/generated/*.pb
+	rm -rf $(SWAGGER_OUT_DIR)/*.json
 
 # Run everything (install tools and generate code)
 all: generate
