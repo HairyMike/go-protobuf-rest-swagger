@@ -1,5 +1,5 @@
 # Swagger doc generation and REST proxy for your gRPC services
-Greetings and Salutations.  Please go checkout my medium article regarding this repo:
+Greetings and Salutations.  Go checkout the accompanying medium article:
 https://medium.com/@beardmanmike/creating-a-grpc-rest-proxy-with-swagger-bd2b56c1c917
 
 ## Setup
