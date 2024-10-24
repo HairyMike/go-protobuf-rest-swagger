@@ -11,20 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-    # Run the 'make all' target to generate code and Swagger file
-    - name: Install dependencies and generate code
-      run: make all
-
-    # Upload Swagger files as an artifact
-    - name: Upload Swagger JSON
-      id: upload-swagger
-      uses: actions/upload-artifact@v3
+    - name: Set up Go
+      uses: actions/setup-go@v4
       with:
-        name: swagger-json
-        path: ./swagger/*.json
+        go-version: '1.22'
 
-    # Output the link to the Swagger artifact in the logs
-    - name: Display artifact download link
-      run: echo "Swagger file available at: ${{ steps.upload-swagger.outputs.download-url }}"
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install protoc and plugins
+      run: make install_protoc install_protoc_gen_go install_protoc_gen_go_grpc install_protoc_gen_openapi install_google_apis
+
+    - name: Generate Go and Swagger code
+      run: make generate
+
+    - name: Verify the generated files
+      run: git diff --exit-code
+
+    - name: Clean generated files
+      run: make clean
