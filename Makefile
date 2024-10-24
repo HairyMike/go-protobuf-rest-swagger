@@ -87,8 +87,17 @@ install_google_apis:
 		echo "Google API protos already cloned"; \
 	fi
 
+# Install protoc-gen-grpc-gateway plugin
+install_protoc_gen_grpc_gateway:
+	@if ! [ -x "$(BIN_DIR)/protoc-gen-grpc-gateway" ]; then \
+		echo "Installing protoc-gen-grpc-gateway..." && \
+		GOBIN=$(BIN_DIR) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@$(PROTOC_GEN_GRPC_GATEWAY_VERSION); \
+	else \
+		echo "protoc-gen-grpc-gateway is already installed"; \
+	fi
+
 # Generate Go and Swagger code from Protobuf
-generate: install_protoc install_protoc_gen_go install_protoc_gen_go_grpc install_protoc_gen_openapi install_google_apis
+generate: install_protoc install_protoc_gen_go install_protoc_gen_go_grpc install_protoc_gen_openapi install_google_apis install_protoc_gen_grpc_gateway
 	@echo "Generating Go and gRPC code..."
 	protoc -I. -I$(GOOGLEAPIS_DIR) \
 	  --go_out=$(GO_OUT_DIR) --go-grpc_out=$(GO_OUT_DIR) \
