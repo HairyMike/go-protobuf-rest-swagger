@@ -30,16 +30,18 @@ endif
 # URLs for downloading protoc based on architecture
 ifeq ($(ARCH),arm64)
   PROTOC_INSTALL_CMD := brew install protobuf
-else
+else ifeq ($(ARCH),x86_64)
   PROTOC_ZIP_URL := https://github.com/protocolbuffers/protobuf/releases/download/v$(PROTOC_VERSION)/protoc-$(PROTOC_VERSION)-$(OS_NAME)-x86_64.zip
-  PROTOC_INSTALL_CMD := curl -LO $(PROTOC_ZIP_URL) && unzip protoc-$(PROTOC_VERSION)-$(OS_NAME)-*.zip -d /usr/local && rm protoc-$(PROTOC_VERSION)-$(OS_NAME)-*.zip
+  PROTOC_INSTALL_CMD := curl -LO $(PROTOC_ZIP_URL) && unzip -o protoc-$(PROTOC_VERSION)-$(OS_NAME)-x86_64.zip -d /usr/local && rm protoc-$(PROTOC_VERSION)-$(OS_NAME)-x86_64.zip
+else
+  $(error Unsupported architecture: $(ARCH))
 endif
 
 # Install protoc (if not already installed)
 install_protoc:
 	@if ! [ -x "$(PROTOC_DIR)/protoc" ]; then \
 		echo "Installing protoc..." && \
-		$(PROTOC_INSTALL_CMD); \
+		$(PROTOC_INSTALL_CMD) || (echo "Failed to download protoc. Check your OS and ARCH settings." && exit 1); \
 	else \
 		echo "protoc is already installed"; \
 	fi
